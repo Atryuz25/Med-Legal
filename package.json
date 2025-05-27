@@ -1,0 +1,12 @@
+{
+  "name": "medico-legal-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Medico-Legal application",
+  "scripts": {
+    "start": "serve .",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+} 
