@@ -207,6 +207,9 @@ function viewRecord(recordId) {
         return;
     }
     
+    // Log the access
+    logAccess(recordId, 'view');
+    
     // Create a modal to display the record details
     const modal = document.createElement('div');
     modal.className = 'modal';
@@ -230,7 +233,9 @@ function viewRecord(recordId) {
                 ${record.fileData ? `
                 <div class="record-file">
                     <h3>Attached File</h3>
-                    <embed src="${record.fileData}" type="application/pdf" width="100%" height="500px">
+                    <div class="file-viewer">
+                        <iframe src="${record.fileData}" type="application/pdf" width="100%" height="500px" style="border: none;"></iframe>
+                    </div>
                 </div>
                 ` : ''}
             </div>
@@ -248,24 +253,18 @@ function viewRecord(recordId) {
     // Add modal to the document
     document.body.appendChild(modal);
     
-    // Show the modal
-    modal.style.display = 'block';
-    
-    // Add event listener to close button
+    // Add event listener to close modal
     const closeBtn = modal.querySelector('.close-modal');
-    closeBtn.addEventListener('click', function() {
+    closeBtn.onclick = function() {
         modal.remove();
-    });
+    };
     
     // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
+    window.onclick = function(event) {
         if (event.target === modal) {
             modal.remove();
         }
-    });
-    
-    // Log this access for audit purposes
-    logAccess(recordId, 'view');
+    };
 }
 
 function downloadRecord(recordId) {
@@ -280,36 +279,23 @@ function downloadRecord(recordId) {
         return;
     }
     
-    if (record.fileData) {
-        // If there's a file attached, download it
-        const link = document.createElement('a');
-        link.href = record.fileData;
-        link.download = `${record.patientName}_medical_record_${recordId}.pdf`;
-        link.click();
-    } else {
-        // Otherwise, create a text file with the record details
-        const recordText = `
-            Patient Name: ${record.patientName}
-            Record Type: ${capitalizeFirstLetter(record.recordType || 'General')}
-            Record Date: ${formatDate(record.recordDate)}
-            Hospital: ${record.hospital || 'Not specified'}
-            Doctor: ${record.doctor || 'Not specified'}
-            
-            Record Content:
-            ${record.content || 'No content available'}
-        `;
-        
-        const blob = new Blob([recordText], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${record.patientName}_medical_record_${recordId}.txt`;
-        link.click();
-        URL.revokeObjectURL(url);
+    if (!record.fileData) {
+        alert('No file attached to this record');
+        return;
     }
     
-    // Log this access for audit purposes
+    // Log the access
     logAccess(recordId, 'download');
+    
+    // Create a temporary link element
+    const a = document.createElement('a');
+    a.href = record.fileData;
+    a.download = `${record.patientName}_${record.recordType || 'record'}_${record.recordDate || 'unknown'}.pdf`;
+    
+    // Append to the document, click it, and remove it
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 function printRecord(recordId) {
@@ -324,6 +310,9 @@ function printRecord(recordId) {
         return;
     }
     
+    // Log the access
+    logAccess(recordId, 'print');
+    
     // Create a new window for printing
     const printWindow = window.open('', '_blank');
     
@@ -336,48 +325,55 @@ function printRecord(recordId) {
             <style>
                 body {
                     font-family: Arial, sans-serif;
+                    line-height: 1.6;
                     margin: 20px;
-                    line-height: 1.5;
                 }
-                h1 {
-                    color: #333;
-                    border-bottom: 1px solid #ccc;
-                    padding-bottom: 10px;
+                .header {
+                    text-align: center;
+                    margin-bottom: 20px;
                 }
-                .record-details p {
-                    margin: 5px 0;
+                .record-details {
+                    margin-bottom: 20px;
                 }
                 .record-content {
-                    margin-top: 20px;
-                    padding: 10px;
-                    border: 1px solid #ccc;
-                    background-color: #f9f9f9;
+                    white-space: pre-wrap;
+                    margin-bottom: 20px;
                 }
-                .footer {
-                    margin-top: 30px;
-                    font-size: 12px;
-                    color: #666;
-                    text-align: center;
+                @media print {
+                    body {
+                        margin: 0;
+                        padding: 20px;
+                    }
+                    .no-print {
+                        display: none;
+                    }
                 }
             </style>
         </head>
         <body>
-            <h1>Medical Record</h1>
+            <div class="header">
+                <h1>Medical Record</h1>
+            </div>
             <div class="record-details">
                 <p><strong>Patient Name:</strong> ${record.patientName}</p>
                 <p><strong>Record Type:</strong> ${capitalizeFirstLetter(record.recordType || 'General')}</p>
                 <p><strong>Record Date:</strong> ${formatDate(record.recordDate)}</p>
                 <p><strong>Hospital:</strong> ${record.hospital || 'Not specified'}</p>
                 <p><strong>Doctor:</strong> ${record.doctor || 'Not specified'}</p>
-                
-                <h2>Record Content</h2>
-                <div class="record-content">
-                    ${record.content || 'No content available'}
-                </div>
+                <p><strong>Upload Date:</strong> ${formatDate(record.uploadDate)}</p>
             </div>
-            <div class="footer">
-                <p>Printed on: ${new Date().toLocaleString()}</p>
-                <p>This document is confidential and intended only for authorized legal purposes.</p>
+            <div class="record-content">
+                <h3>Record Content</h3>
+                ${record.content || 'No content available'}
+            </div>
+            ${record.fileData ? `
+            <div class="record-file">
+                <h3>Attached File</h3>
+                <iframe src="${record.fileData}" width="100%" height="500px" style="border: none;"></iframe>
+            </div>
+            ` : ''}
+            <div class="no-print" style="margin-top: 20px; text-align: center;">
+                <button onclick="window.print()">Print</button>
             </div>
         </body>
         </html>
@@ -386,14 +382,6 @@ function printRecord(recordId) {
     // Write the content to the new window
     printWindow.document.write(printContent);
     printWindow.document.close();
-    
-    // Wait for content to load then print
-    printWindow.onload = function() {
-        printWindow.print();
-    };
-    
-    // Log this access for audit purposes
-    logAccess(recordId, 'print');
 }
 
 function logAccess(recordId, accessType) {
