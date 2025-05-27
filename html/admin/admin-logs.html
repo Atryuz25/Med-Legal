@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <a href="../profile.html"><i class="fas fa-user-circle profile-icon"></i></a>
+        </div>
+        <ul>
+            <li><a href="../dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="../notifications.html"><i class="fas fa-bell"></i> Notifications <span class="badge">3</span></a></li>
+            <li><a href="admin-users.html"><i class="fas fa-users"></i> User Management</a></li>
+            <li><a href="admin-logs.html" class="active"><i class="fas fa-history"></i> Audit Logs</a></li>
+            <li><a href="audit-report.html"><i class="fas fa-file-export"></i> Audit Reports</a></li>
+            <li><a href="record-details.html"><i class="fas fa-file-alt"></i> Record Details</a></li>
+            <li><a href="../settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <section class="main-content">
+        <h1>Audit Logs</h1>
+        <div class="logs card">
+            <div class="chart-placeholder">📊 Access Trends (JS Chart Here)</div>
+            <table role="grid">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr tabindex="0">
+                        <td>2025-04-04 10:00</td>
+                        <td>Lawyer XYZ</td>
+                        <td>Accessed MLC-001</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn export"><i class="fas fa-download"></i> Export Logs</button>
+        </div>
+    </section>
+</body>
+</html>

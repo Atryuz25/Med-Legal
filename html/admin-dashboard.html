@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-user-tie"></i>
+                <span>MedLegal Admin</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active">
+                    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="#" id="manage-users-link"><i class="fas fa-users"></i> Manage Users</a>
+                </li>
+                <li>
+                    <a href="#" id="reports-link"><i class="fas fa-chart-bar"></i> Reports</a>
+                </li>
+                <li>
+                    <a href="#" id="profile-link"><i class="fas fa-user"></i> My Profile</a>
+                </li>
+                <li>
+                    <a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="header-content">
+                    <h1>Admin Dashboard</h1>
+                    <div class="user-info">
+                        <span id="admin-name"></span>
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Total Users</h3>
+                    <p id="total-users">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-plus"></i>
+                    <h3>Pending Approvals</h3>
+                    <p id="pending-users">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-check"></i>
+                    <h3>Approved Users</h3>
+                    <p id="approved-users">0</p>
+                </div>
+            </div>
+
+            <!-- Pending Users Section -->
+            <div class="section" id="pending-users-section">
+                <div class="section-header">
+                    <h2>Pending User Approvals</h2>
+                    <button class="refresh-btn" id="refresh-pending"><i class="fas fa-sync-alt"></i> Refresh</button>
+                </div>
+                <div class="pending-users-list" id="pending-users-list">
+                    <!-- Pending users will be populated here -->
+                    <p class="loading">Loading pending users...</p>
+                </div>
+            </div>
+
+            <!-- User Management Section (Initially Hidden) -->
+            <div class="section hidden" id="manage-users-section">
+                <div class="section-header">
+                    <h2>Manage Users</h2>
+                    <div class="search-container">
+                        <input type="text" id="user-search" placeholder="Search users...">
+                        <button id="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="users-list" id="users-list">
+                    <!-- Users will be populated here -->
+                    <p class="loading">Loading users...</p>
+                </div>
+            </div>
+
+            <!-- Reports Section (Initially Hidden) -->
+            <div class="section hidden" id="reports-section">
+                <h2>Reports</h2>
+                <div class="reports-container">
+                    <div class="report-card">
+                        <h3>User Registration</h3>
+                        <p>View user registration statistics</p>
+                        <button class="btn">Generate Report</button>
+                    </div>
+                    <div class="report-card">
+                        <h3>User Activity</h3>
+                        <p>View user activity statistics</p>
+                        <button class="btn">Generate Report</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section (Initially Hidden) -->
+            <div class="section hidden" id="profile-section">
+                <h2>My Profile</h2>
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label for="profile-name">Name</label>
+                        <input type="text" id="profile-name" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-email">Email</label>
+                        <input type="email" id="profile-email" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-phone">Phone</label>
+                        <input type="tel" id="profile-phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" id="current-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password">
+                    </div>
+                    <button class="btn" id="update-profile">Update Profile</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>

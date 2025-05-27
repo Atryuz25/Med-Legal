@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Login - MedLegal</title>
+</head>
+<body>
+    <h1>Debug Login</h1>
+    <div id="output"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const output = document.getElementById('output');
+            
+            try {
+                output.innerHTML += '<p>Attempting to login as superadmin...</p>';
+                
+                const response = await fetch('http://https://medicolegal.onrender.com/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        userType: 'admin', 
+                        id: 'superadmin', 
+                        password: 'superadmin123' 
+                    }),
+                });
+
+                const data = await response.json();
+                
+                output.innerHTML += `<p>Login response status: ${response.status}</p>`;
+                output.innerHTML += `<p>Login response data: <pre>${JSON.stringify(data, null, 2)}</pre></p>`;
+                
+                if (response.ok) {
+                    output.innerHTML += `<p>User type: ${data.user.userType}</p>`;
+                    output.innerHTML += `<p>Is superadmin: ${data.user.isSuperAdmin}</p>`;
+                    
+                    const redirectUrl = data.user.isSuperAdmin ? 'superadmin-dashboard.html' : 'admin-dashboard.html';
+                    output.innerHTML += `<p>Redirect URL would be: ${redirectUrl}</p>`;
+                }
+            } catch (error) {
+                output.innerHTML += `<p>Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

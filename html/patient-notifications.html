@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Notifications - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/patient.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .notifications-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .notification-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: rgba(79, 70, 229, 0.5);
+            border-color: #4f46e5;
+        }
+        
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .notification-item {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid rgba(221, 214, 254, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-item:hover {
+            background: rgba(30, 27, 75, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        .notification-item.unread {
+            border-left: 4px solid #4f46e5;
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(79, 70, 229, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .notification-icon i {
+            color: #4f46e5;
+            font-size: 18px;
+        }
+        
+        .notification-content {
+            flex-grow: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        
+        .notification-message {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+        
+        .notification-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .notification-btn {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn {
+            background: rgba(79, 70, 229, 0.2);
+            color: #818cf8;
+            border: 1px solid rgba(79, 70, 229, 0.3);
+        }
+        
+        .view-btn:hover {
+            background: rgba(79, 70, 229, 0.4);
+        }
+        
+        .mark-read-btn {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-left: auto;
+        }
+        
+        .mark-read-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid rgba(221, 214, 254, 0.2);
+            border-radius: 15px;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Notification type-specific styles */
+        .notification-icon.record {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        
+        .notification-icon.record i {
+            color: #34d399;
+        }
+        
+        .notification-icon.consent {
+            background: rgba(245, 158, 11, 0.2);
+        }
+        
+        .notification-icon.consent i {
+            color: #fbbf24;
+        }
+        
+        .notification-icon.alert {
+            background: rgba(239, 68, 68, 0.2);
+        }
+        
+        .notification-icon.alert i {
+            color: #f87171;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="profile">
+            <a href="patient-profile.html" class="profile-link">
+                <i class="fas fa-user-circle profile-icon" aria-label="Profile"></i>
+                <span class="profile-tooltip">View Profile</span>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="patient-dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="patient/patient-records.html"><i class="fas fa-file-medical"></i> <span>My Records</span></a></li>
+                <li><a href="patient/patient-consent.html"><i class="fas fa-clipboard-check"></i> <span>Consent Management</span></a></li>
+                <li><a href="patient-notifications.html" class="active"><i class="fas fa-bell"></i> <span>Notifications</span></a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="index.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>Notifications</h1>
+        
+        <div class="notifications-container">
+            <div class="notification-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="unread">Unread</button>
+                <button class="filter-btn" data-filter="record">Records</button>
+                <button class="filter-btn" data-filter="consent">Consents</button>
+            </div>
+            
+            <div class="notification-list" id="notification-list">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample notifications data (in a real app, this would come from an API)
+            const sampleNotifications = [
+                {
+                    id: 'NOT001',
+                    type: 'record',
+                    title: 'New Medical Record Added',
+                    message: 'Dr. Sarah Johnson has added a new medical record to your profile.',
+                    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+                    read: false,
+                    recordId: 'REC001'
+                },
+                {
+                    id: 'NOT002',
+                    type: 'consent',
+                    title: 'Consent Request',
+                    message: 'Atty. James Wilson has requested access to your medical records.',
+                    timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+                    read: false,
+                    consentId: 'CON002'
+                },
+                {
+                    id: 'NOT003',
+                    type: 'alert',
+                    title: 'Consent Expiring Soon',
+                    message: 'Your consent for General Hospital will expire in 7 days.',
+                    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
+                    read: true,
+                    consentId: 'CON001'
+                }
+            ];
+            
+            // Store sample notifications in localStorage if not already present
+            if (!localStorage.getItem('patientNotifications')) {
+                localStorage.setItem('patientNotifications', JSON.stringify(sampleNotifications));
+            }
+            
+            // Load notifications
+            loadNotifications();
+            
+            // Set up filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Apply filter
+                    const filter = this.getAttribute('data-filter');
+                    filterNotifications(filter);
+                });
+            });
+        });
+        
+        function loadNotifications() {
+            const notificationList = document.getElementById('notification-list');
+            const notifications = JSON.parse(localStorage.getItem('patientNotifications') || '[]');
+            
+            if (notifications.length > 0) {
+                // Clear notification list
+                notificationList.innerHTML = '';
+                
+                // Sort by timestamp (newest first)
+                notifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                // Add notifications
+                notifications.forEach(notification => {
+                    const notificationItem = createNotificationItem(notification);
+                    notificationList.appendChild(notificationItem);
+                });
+            } else {
+                // Show empty state
+                notificationList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <h3>No Notifications</h3>
+                        <p>You don't have any notifications at the moment.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function createNotificationItem(notification) {
+            const notificationItem = document.createElement('div');
+            notificationItem.className = `notification-item ${notification.read ? '' : 'unread'}`;
+            notificationItem.setAttribute('data-id', notification.id);
+            notificationItem.setAttribute('data-type', notification.type);
+            
+            // Format timestamp
+            const timestamp = new Date(notification.timestamp);
+            const timeAgo = formatTimeAgo(timestamp);
+            
+            // Determine icon based on notification type
+            let iconClass = 'fa-bell';
+            if (notification.type === 'record') {
+                iconClass = 'fa-file-medical';
+            } else if (notification.type === 'consent') {
+                iconClass = 'fa-clipboard-check';
+            } else if (notification.type === 'alert') {
+                iconClass = 'fa-exclamation-triangle';
+            }
+            
+            // Create actions based on notification type
+            let actions = '';
+            if (notification.type === 'record' && notification.recordId) {
+                actions = `
+                    <button class="notification-btn view-btn" onclick="viewRecord('${notification.recordId}')">
+                        <i class="fas fa-eye"></i> View Record
+                    </button>
+                `;
+            } else if ((notification.type === 'consent' || notification.type === 'alert') && notification.consentId) {
+                actions = `
+                    <button class="notification-btn view-btn" onclick="viewConsent('${notification.consentId}')">
+                        <i class="fas fa-eye"></i> View Consent
+                    </button>
+                `;
+            }
+            
+            notificationItem.innerHTML = `
+                <div class="notification-icon ${notification.type}">
+                    <i class="fas ${iconClass}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">${notification.title}</div>
+                    <div class="notification-message">${notification.message}</div>
+                    <div class="notification-time">${timeAgo}</div>
+                    <div class="notification-actions">
+                        ${actions}
+                        <button class="notification-btn mark-read-btn" onclick="toggleReadStatus('${notification.id}')">
+                            ${notification.read ? 'Mark as Unread' : 'Mark as Read'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return notificationItem;
+        }
+        
+        function filterNotifications(filter) {
+            const notificationItems = document.querySelectorAll('.notification-item');
+            const notificationList = document.getElementById('notification-list');
+            
+            let visibleCount = 0;
+            
+            notificationItems.forEach(item => {
+                if (filter === 'all' || 
+                    (filter === 'unread' && item.classList.contains('unread')) || 
+                    item.getAttribute('data-type') === filter) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show empty state if no notifications match the filter
+            if (visibleCount === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.innerHTML = `
+                    <i class="fas fa-bell-slash"></i>
+                    <h3>No ${filter === 'all' ? '' : filter} Notifications</h3>
+                    <p>You don't have any ${filter === 'all' ? '' : filter} notifications at the moment.</p>
+                `;
+                
+                // Remove any existing empty state
+                const existingEmptyState = notificationList.querySelector('.empty-state');
+                if (existingEmptyState) {
+                    existingEmptyState.remove();
+                }
+                
+                notificationList.appendChild(emptyState);
+            } else {
+                // Remove empty state if there are visible notifications
+                const existingEmptyState = notificationList.querySelector('.empty-state');
+                if (existingEmptyState) {
+                    existingEmptyState.remove();
+                }
+            }
+        }
+        
+        function toggleReadStatus(notificationId) {
+            const notifications = JSON.parse(localStorage.getItem('patientNotifications') || '[]');
+            const notificationIndex = notifications.findIndex(n => n.id === notificationId);
+            
+            if (notificationIndex !== -1) {
+                // Toggle read status
+                notifications[notificationIndex].read = !notifications[notificationIndex].read;
+                
+                // Save back to localStorage
+                localStorage.setItem('patientNotifications', JSON.stringify(notifications));
+                
+                // Update UI
+                const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                if (notificationItem) {
+                    if (notifications[notificationIndex].read) {
+                        notificationItem.classList.remove('unread');
+                    } else {
+                        notificationItem.classList.add('unread');
+                    }
+                    
+                    const markReadBtn = notificationItem.querySelector('.mark-read-btn');
+                    if (markReadBtn) {
+                        markReadBtn.textContent = notifications[notificationIndex].read ? 'Mark as Unread' : 'Mark as Read';
+                    }
+                }
+                
+                // Update unread count
+                updateUnreadCount();
+            }
+        }
+        
+        function viewRecord(recordId) {
+            // In a real app, this would navigate to the record details page
+            window.location.href = `patient/patient-records.html?record=${recordId}`;
+        }
+        
+        function viewConsent(consentId) {
+            // In a real app, this would navigate to the consent details page
+            window.location.href = `patient/patient-consent.html?consent=${consentId}`;
+        }
+        
+        function updateUnreadCount() {
+            const notifications = JSON.parse(localStorage.getItem('patientNotifications') || '[]');
+            const unreadCount = notifications.filter(n => !n.read).length;
+            
+            // In a real app, this would update a badge in the UI
+            console.log('Unread notifications:', unreadCount);
+        }
+        
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) {
+                return 'Just now';
+            }
+            
+            const diffInMinutes = Math.floor(diffInSeconds / 60);
+            if (diffInMinutes < 60) {
+                return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
+            }
+            
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            if (diffInHours < 24) {
+                return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+            }
+            
+            const diffInDays = Math.floor(diffInHours / 24);
+            if (diffInDays < 30) {
+                return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+            }
+            
+            const diffInMonths = Math.floor(diffInDays / 30);
+            if (diffInMonths < 12) {
+                return `${diffInMonths} month${diffInMonths > 1 ? 's' : ''} ago`;
+            }
+            
+            const diffInYears = Math.floor(diffInMonths / 12);
+            return `${diffInYears} year${diffInYears > 1 ? 's' : ''} ago`;
+        }
+    </script>
+</body>
+</html>

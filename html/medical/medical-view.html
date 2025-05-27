@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Records - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/medical/medical-view.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <a href="medical-profile.html" class="profile-link">
+                <i class="fas fa-user-circle profile-icon" aria-label="Profile"></i>
+                <span class="profile-tooltip">Profile</span>
+            </a>
+        </div>
+        <ul>
+            <li><a href="medical-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="../notifications.html"><i class="fas fa-bell"></i> Notifications <span class="badge">3</span></a></li>
+            <li><a href="medical-upload.html"><i class="fas fa-upload"></i> Upload Record</a></li>
+            <li><a href="medical-view.html" class="active"><i class="fas fa-folder-open"></i> View/Edit Records</a></li>
+            <li><a href="medical-approvals.html"><i class="fas fa-clipboard-check"></i> Approvals</a></li>
+            <li><a href="../settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <section class="main-content">
+        <div class="header-actions">
+            <h1>Medical Records</h1>
+            <div class="actions">
+                <div class="search-container">
+                    <input type="text" id="search-records" placeholder="Search records...">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <button class="btn" id="refresh-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <a href="medical-upload.html" class="btn"><i class="fas fa-plus"></i> New Record</a>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="filter-case-type">Case Type:</label>
+                <select id="filter-case-type">
+                    <option value="">All Types</option>
+                    <option value="assault">Assault</option>
+                    <option value="accident">Accident</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-date">Date Range:</label>
+                <select id="filter-date">
+                    <option value="">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-status">Status:</label>
+                <select id="filter-status">
+                    <option value="">All Status</option>
+                    <option value="draft">Draft</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="records-container">
+            <div class="loading-spinner" id="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading records...</p>
+            </div>
+            
+            <div id="records-list" class="records-list">
+                <!-- Records will be populated here dynamically -->
+            </div>
+            
+            <div id="no-records" class="no-records hidden">
+                <i class="fas fa-folder-open"></i>
+                <p>No records found</p>
+                <a href="medical-upload.html" class="btn"><i class="fas fa-plus"></i> Create New Record</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Record Details Modal -->
+    <div id="record-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Record Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="record-details">
+                    <!-- Record details will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="download-pdf"><i class="fas fa-download"></i> Download PDF</button>
+                <button class="btn" id="edit-record"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn delete" id="delete-record"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/medical/medical-view.js"></script>
+</body>
+</html>

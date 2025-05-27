@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings Redirect - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .redirect-container {
+            max-width: 600px;
+            margin: 100px auto;
+            text-align: center;
+            padding: 30px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 15px;
+        }
+        
+        .redirect-container i {
+            font-size: 60px;
+            color: #3b82f6;
+            margin-bottom: 20px;
+        }
+        
+        .redirect-container h1 {
+            margin-bottom: 20px;
+        }
+        
+        .redirect-container p {
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .redirect-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .redirect-btn {
+            padding: 12px 20px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .redirect-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <i class="fas fa-cog fa-spin"></i>
+        <h1>Settings Redirect</h1>
+        <p>We've updated our settings pages to be role-specific. Please select your user type below to access the appropriate settings page:</p>
+        
+        <div class="redirect-options">
+            <button id="medical-btn" class="redirect-btn">
+                <i class="fas fa-user-md"></i>
+                <span>Medical Staff Settings</span>
+            </button>
+            <button id="legal-btn" class="redirect-btn">
+                <i class="fas fa-gavel"></i>
+                <span>Legal Professional Settings</span>
+            </button>
+            <button id="patient-btn" class="redirect-btn">
+                <i class="fas fa-user"></i>
+                <span>Patient Settings</span>
+            </button>
+            <button id="admin-btn" class="redirect-btn">
+                <i class="fas fa-user-shield"></i>
+                <span>Admin Settings</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get user type from localStorage
+            const userType = localStorage.getItem('userType');
+            
+            // Set up button click handlers
+            document.getElementById('medical-btn').addEventListener('click', function() {
+                window.location.href = 'medical/medical-settings.html';
+            });
+            
+            document.getElementById('legal-btn').addEventListener('click', function() {
+                window.location.href = 'legal/legal-settings.html';
+            });
+            
+            document.getElementById('patient-btn').addEventListener('click', function() {
+                window.location.href = 'patient/patient-settings.html';
+            });
+            
+            document.getElementById('admin-btn').addEventListener('click', function() {
+                window.location.href = 'admin/admin-settings.html';
+            });
+            
+            // Auto-redirect based on user type if available
+            if (userType) {
+                setTimeout(function() {
+                    switch(userType) {
+                        case 'medical':
+                            window.location.href = 'medical/medical-settings.html';
+                            break;
+                        case 'legal':
+                            window.location.href = 'legal/legal-settings.html';
+                            break;
+                        case 'patient':
+                            window.location.href = 'patient/patient-settings.html';
+                            break;
+                        case 'admin':
+                            window.location.href = 'admin/admin-settings.html';
+                            break;
+                    }
+                }, 1000); // Redirect after 1 second
+            }
+        });
+    </script>
+</body>
+</html>

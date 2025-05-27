@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-user-tie"></i>
+                <span>MedLegal Admin</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active">
+                    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="admin-users.html"><i class="fas fa-users"></i> Manage Users</a>
+                </li>
+                <li>
+                    <a href="admin-logs.html"><i class="fas fa-clipboard-list"></i> System Logs</a>
+                </li>
+                <li>
+                    <a href="admin-settings.html"><i class="fas fa-cog"></i> Settings</a>
+                </li>
+                <li>
+                    <a href="../index.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="header-content">
+                    <h1>Admin Dashboard</h1>
+                    <div class="user-info">
+                        <span id="admin-name"></span>
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Total Users</h3>
+                    <p id="total-users">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-plus"></i>
+                    <h3>Pending Approvals</h3>
+                    <p id="pending-users">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-check"></i>
+                    <h3>Approved Users</h3>
+                    <p id="approved-users">0</p>
+                </div>
+            </div>
+
+            <!-- Pending Users Section -->
+            <div class="section" id="pending-users-section">
+                <div class="section-header">
+                    <h2>Pending User Approvals</h2>
+                    <button class="refresh-btn" id="refresh-pending"><i class="fas fa-sync-alt"></i> Refresh</button>
+                </div>
+                <div class="pending-users-list" id="pending-users-list">
+                    <!-- Pending users will be populated here -->
+                    <p class="loading">Loading pending users...</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="quick-actions">
+                    <button onclick="window.location.href='admin-users.html'" class="quick-action-btn">
+                        <i class="fas fa-users"></i>
+                        <span>Manage Users</span>
+                    </button>
+                    <button onclick="window.location.href='admin-logs.html'" class="quick-action-btn">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>View System Logs</span>
+                    </button>
+                    <button onclick="window.location.href='admin-settings.html'" class="quick-action-btn">
+                        <i class="fas fa-cog"></i>
+                        <span>System Settings</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Staff Dashboard - MedLegal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/medical.css">
+    <style>
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+            max-width: 1200px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .welcome-message {
+            max-width: 600px;
+        }
+        
+        .welcome-message h1 {
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-align: left;
+        }
+        
+        .welcome-message p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .stat-card i {
+            font-size: 30px;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card h3 {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .stat-card .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .recent-activity {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .recent-activity h2 {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .activity-item:hover {
+            background: rgba(30, 41, 59, 0.8);
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .activity-icon i {
+            font-size: 18px;
+            color: #3b82f6;
+        }
+        
+        .activity-details {
+            flex: 1;
+        }
+        
+        .activity-details h3 {
+            font-size: 16px;
+            color: #ffffff;
+            margin: 0 0 5px 0;
+        }
+        
+        .activity-details p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0 0 5px 0;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .activity-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease, background 0.3s ease;
+        }
+        
+        .activity-item {
+            position: relative;
+        }
+        
+        .activity-item:hover .activity-remove {
+            opacity: 1;
+        }
+        
+        .activity-remove:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+        
+        .quick-actions {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .quick-actions h2 {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .quick-action-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .quick-action-btn i {
+            font-size: 20px;
+            color: #3b82f6;
+            width: 24px;
+            text-align: center;
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="profile">
+            <a href="medical-profile.html" class="profile-link">
+                <i class="fas fa-user-circle profile-icon" aria-label="Profile"></i>
+                <span class="profile-tooltip">View Profile</span>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="medical-dashboard.html" class="active"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="medical-notifications.html"><i class="fas fa-bell"></i> <span>Notifications <span class="badge" id="notifications-badge">0</span></span></a></li>
+                <li><a href="medical-upload.html"><i class="fas fa-upload"></i> <span>Upload Record</span></a></li>
+                <li><a href="medical-view.html"><i class="fas fa-file-medical"></i> <span> View/Edit Records</span></a></li>
+                <li><a href="medical-approvals.html"><i class="fas fa-clipboard-check"></i> <span>Approvals</span></a></li>
+                <li><a href="medical-settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="dashboard-header">
+            <div class="welcome-message">
+                <h1>Welcome, <span id="user-name">Doctor</span></h1>
+                <p>Manage your medical records, review approval requests, and track your activity from this dashboard.</p>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-file-medical"></i>
+                <h3>Records Uploaded</h3>
+                <p class="stat-number" id="records-uploaded-count">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clipboard-check"></i>
+                <h3>Pending Approvals</h3>
+                <p class="stat-number" id="pending-approvals-count">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-bell"></i>
+                <h3>Notifications</h3>
+                <p class="stat-number" id="notifications-count">0</p>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list" id="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h3>Account Login</h3>
+                            <p>You logged in to your account</p>
+                            <span class="activity-time">Just now</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h3>Record Uploaded</h3>
+                            <p>You uploaded a new medical record</p>
+                            <span class="activity-time">2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h3>Access Request Approved</h3>
+                            <p>You approved an access request from Legal Professional</p>
+                            <span class="activity-time">Yesterday</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <h2>Quick Actions</h2>
+                <div class="action-buttons">
+                    <button onclick="window.location.href='medical-upload.html'" class="quick-action-btn">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Medical Record</span>
+                    </button>
+                    <button onclick="window.location.href='medical-view.html'" class="quick-action-btn">
+                        <i class="fas fa-file-medical"></i>
+                        <span>View Medical Records</span>
+                    </button>
+                    <button onclick="window.location.href='medical-approvals.html'" class="quick-action-btn">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Manage Approvals</span>
+                    </button>
+                    <button onclick="window.location.href='medical-settings.html'" class="quick-action-btn">
+                        <i class="fas fa-cog"></i>
+                        <span>Account Settings</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="/js/medical/medical-dashboard.js"></script>
+</body>
+</html>

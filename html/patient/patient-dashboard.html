@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/patient.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="profile">
+            <a href="/html/patient/profile.html" class="profile-link">
+                <i class="fas fa-user-circle profile-icon" aria-label="Profile"></i>
+                <span class="profile-tooltip">View Profile</span>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/html/patient/dashboard.html" class="active"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="/html/patient/patient-records.html"><i class="fas fa-file-medical"></i> <span>My Records</span></a></li>
+                <li><a href="/html/patient/patient-consent.html"><i class="fas fa-handshake"></i> <span>Consent Management</span></a></li>
+                <li><a href="/index.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>Patient Dashboard</h1>
+        
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <i class="fas fa-file-medical"></i>
+                <h3>My Records</h3>
+                <p class="stat-number" id="records-count">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-handshake"></i>
+                <h3>Active Consents</h3>
+                <p class="stat-number" id="consents-count">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-bell"></i>
+                <h3>Notifications</h3>
+                <p class="stat-number" id="notifications-count">0</p>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="action-buttons">
+                <button onclick="window.location.href='patient-records.html'" class="quick-action-btn">
+                    <i class="fas fa-file-medical"></i>
+                    <span>My Records</span>
+                </button>
+                <button onclick="window.location.href='patient-consent.html'" class="quick-action-btn">
+                    <i class="fas fa-handshake"></i>
+                    <span>Consent Management</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-list" id="activity-list">
+                <!-- Activities will be loaded here -->
+                <div class="empty-state">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No recent activity to display</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .recent-activity {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .recent-activity h2 {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+            position: relative;
+        }
+        
+        .activity-item:hover {
+            background: rgba(30, 41, 59, 0.8);
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .activity-icon i {
+            font-size: 18px;
+            color: #3b82f6;
+        }
+        
+        .activity-details {
+            flex: 1;
+        }
+        
+        .activity-details h3 {
+            font-size: 16px;
+            color: #ffffff;
+            margin: 0 0 5px 0;
+        }
+        
+        .activity-details p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0 0 5px 0;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .activity-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease, background 0.3s ease;
+        }
+        
+        .activity-item:hover .activity-remove {
+            opacity: 1;
+        }
+        
+        .activity-remove:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .empty-state i {
+            font-size: 40px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+        }
+    </style>
+
+    <script src="/js/patient/patient-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Users - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .reset-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        h1 i {
+            color: #ef4444;
+        }
+        
+        .warning {
+            color: #ef4444;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(90deg, #ef4444, #b91c1c);
+            color: #ffffff;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(90deg, #dc2626, #991b1b);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .user-list {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .user-list pre {
+            color: #ffffff;
+            font-family: monospace;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .success-message {
+            color: #10b981;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="reset-container">
+        <h1><i class="fas fa-exclamation-triangle"></i> Reset Users</h1>
+        <p class="warning">Warning: This action cannot be undone!</p>
+        <p class="description">
+            This page allows you to reset all users to their default state. 
+            This will remove any account locks, failed login attempts, and restore default passwords.
+            Use this for testing purposes only.
+        </p>
+        
+        <div class="user-list">
+            <pre id="user-data">Loading user data...</pre>
+        </div>
+        
+        <button id="reset-btn" class="btn btn-danger">
+            <i class="fas fa-redo-alt"></i> Reset All Users
+        </button>
+        <a href="index.html" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Login
+        </a>
+        
+        <div id="success-message" class="success-message"></div>
+    </div>
+    
+    <script src="/js/users.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resetBtn = document.getElementById('reset-btn');
+            const userDataElement = document.getElementById('user-data');
+            const successMessage = document.getElementById('success-message');
+            
+            // Display current user data
+            displayUserData();
+            
+            // Reset button click handler
+            resetBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to reset all users to their default state?')) {
+                    // Reset users
+                    const users = resetUsers();
+                    
+                    // Update display
+                    displayUserData();
+                    
+                    // Show success message
+                    successMessage.textContent = 'Users have been reset successfully!';
+                    successMessage.style.display = 'block';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }
+            });
+            
+            function displayUserData() {
+                const users = getUsers();
+                
+                // Format user data for display
+                const formattedData = users.map(user => {
+                    return `User: ${user.name}
+Type: ${user.userType}
+ID: ${user.id}
+Email: ${user.email}
+Password: ${user.password}
+Locked: ${user.accountLocked ? 'Yes' : 'No'}
+Failed Attempts: ${user.failedAttempts || 0}
+${user.accountLocked ? 'Lock Time: ' + new Date(user.lockTime).toLocaleString() : ''}
+----------------------------------------`;
+                }).join('\n\n');
+                
+                userDataElement.textContent = formattedData || 'No users found';
+            }
+        });
+    </script>
+</body>
+</html>

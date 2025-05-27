@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Records - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/patient.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .records-container {
+            margin-top: 20px;
+        }
+        
+        .record-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: rgba(79, 70, 229, 0.5);
+            border-color: #4f46e5;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-left: auto;
+        }
+        
+        .search-box input {
+            padding: 8px 15px 8px 35px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 200px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .records-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .record-card {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid rgba(221, 214, 254, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .record-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .record-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+        
+        .record-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .record-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .record-type.medical {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .record-type.lab {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .record-type.prescription {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .record-details {
+            margin-bottom: 15px;
+        }
+        
+        .record-details p {
+            margin: 5px 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+        
+        .record-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .record-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn {
+            background: rgba(79, 70, 229, 0.2);
+            color: #818cf8;
+            border: 1px solid rgba(79, 70, 229, 0.3);
+        }
+        
+        .view-btn:hover {
+            background: rgba(79, 70, 229, 0.4);
+        }
+        
+        .download-btn {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .download-btn:hover {
+            background: rgba(16, 185, 129, 0.4);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid rgba(221, 214, 254, 0.2);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="profile">
+            <a href="../patient-profile.html" class="profile-link">
+                <i class="fas fa-user-circle profile-icon" aria-label="Profile"></i>
+                <span class="profile-tooltip">View Profile</span>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../patient-dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="patient-records.html" class="active"><i class="fas fa-file-medical"></i> <span>My Records</span></a></li>
+                <li><a href="patient-consent.html"><i class="fas fa-clipboard-check"></i> <span>Consent Management</span></a></li>
+                <li><a href="../patient-notifications.html"><i class="fas fa-bell"></i> <span>Notifications</span></a></li>
+                <li><a href="../settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>My Medical Records</h1>
+        
+        <div class="records-container">
+            <div class="record-filters">
+                <button class="filter-btn active" data-filter="all">All Records</button>
+                <button class="filter-btn" data-filter="medical">Medical Reports</button>
+                <button class="filter-btn" data-filter="lab">Lab Results</button>
+                <button class="filter-btn" data-filter="prescription">Prescriptions</button>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-records" placeholder="Search records...">
+                </div>
+            </div>
+            
+            <div id="records-list" class="records-list">
+                <!-- Records will be loaded here -->
+            </div>
+            
+            <div id="empty-state" class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h3>No Records Found</h3>
+                <p>You don't have any medical records yet.</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/patient/patient-records.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consent Management - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/patient.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .consent-container {
+            margin-top: 20px;
+        }
+        
+        .consent-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .consent-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .consent-tab.active {
+            color: #ffffff;
+        }
+        
+        .consent-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #4f46e5;
+        }
+        
+        .consent-tab-content {
+            display: none;
+        }
+        
+        .consent-tab-content.active {
+            display: block;
+        }
+        
+        .consent-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .consent-card {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid rgba(221, 214, 254, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .consent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .consent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .consent-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+        
+        .consent-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .consent-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .consent-status.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .consent-status.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .consent-status.expired {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .consent-details {
+            margin-bottom: 15px;
+        }
+        
+        .consent-details p {
+            margin: 5px 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+        
+        .consent-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .consent-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn {
+            background: rgba(79, 70, 229, 0.2);
+            color: #818cf8;
+            border: 1px solid rgba(79, 70, 229, 0.3);
+        }
+        
+        .view-btn:hover {
+            background: rgba(79, 70, 229, 0.4);
+        }
+        
+        .revoke-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .revoke-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid rgba(221, 214, 254, 0.2);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="profile">
+            <a href="../patient-profile.html" class="profile-link">
+                <i class="fas fa-user-circle profile-icon" aria-label="Profile"></i>
+                <span class="profile-tooltip">View Profile</span>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../patient-dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="patient-records.html"><i class="fas fa-file-medical"></i> <span>My Records</span></a></li>
+                <li><a href="patient-consent.html" class="active"><i class="fas fa-clipboard-check"></i> <span>Consent Management</span></a></li>
+                <li><a href="../patient-notifications.html"><i class="fas fa-bell"></i> <span>Notifications</span></a></li>
+                <li><a href="../settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>Consent Management</h1>
+        
+        <div class="consent-container">
+            <div class="consent-tabs">
+                <div class="consent-tab active" data-tab="active">Active Consents</div>
+                <div class="consent-tab" data-tab="pending">Pending Requests</div>
+                <div class="consent-tab" data-tab="expired">Expired Consents</div>
+            </div>
+            
+            <div id="active-consents" class="consent-tab-content active">
+                <div class="consent-list" id="active-consent-list">
+                    <!-- Active consents will be loaded here -->
+                </div>
+                
+                <div id="active-empty-state" class="empty-state">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h3>No Active Consents</h3>
+                    <p>You don't have any active consents at the moment.</p>
+                </div>
+            </div>
+            
+            <div id="pending-consents" class="consent-tab-content">
+                <div class="consent-list" id="pending-consent-list">
+                    <!-- Pending consents will be loaded here -->
+                </div>
+                
+                <div id="pending-empty-state" class="empty-state">
+                    <i class="fas fa-clock"></i>
+                    <h3>No Pending Requests</h3>
+                    <p>You don't have any pending consent requests.</p>
+                </div>
+            </div>
+            
+            <div id="expired-consents" class="consent-tab-content">
+                <div class="consent-list" id="expired-consent-list">
+                    <!-- Expired consents will be loaded here -->
+                </div>
+                
+                <div id="expired-empty-state" class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>No Expired Consents</h3>
+                    <p>You don't have any expired consents.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/patient/patient-consent.js"></script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approvals - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/medical/medical-approvals.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .approvals-container {
+            margin-top: 20px;
+        }
+        
+        .approval-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .approval-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .approval-tab.active {
+            color: #ffffff;
+        }
+        
+        .approval-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #3b82f6;
+        }
+        
+        .approval-tab-content {
+            display: none;
+        }
+        
+        .approval-tab-content.active {
+            display: block;
+        }
+        
+        .approval-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .approval-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .approval-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .approval-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .approval-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+        
+        .approval-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .approval-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .approval-status.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .approval-status.approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .approval-status.rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .approval-details {
+            margin-bottom: 15px;
+        }
+        
+        .approval-details p {
+            margin: 5px 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+        
+        .approval-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .approval-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .view-btn:hover {
+            background: rgba(59, 130, 246, 0.4);
+        }
+        
+        .approve-btn {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .approve-btn:hover {
+            background: rgba(16, 185, 129, 0.4);
+        }
+        
+        .reject-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .reject-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: #1e293b;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            color: rgba(255, 255, 255, 0.6);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close-modal:hover {
+            color: #ffffff;
+        }
+        
+        /* Document item styles */
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .document-icon {
+            font-size: 24px;
+            color: #ef4444;
+        }
+        
+        .document-details h4 {
+            margin: 0 0 5px 0;
+            color: #ffffff;
+        }
+        
+        .document-details p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+        }
+        
+        .document-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .document-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .view-doc-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .view-doc-btn:hover {
+            background: rgba(59, 130, 246, 0.4);
+        }
+        
+        .download-btn {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .download-btn:hover {
+            background: rgba(16, 185, 129, 0.4);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        .badge.court-order {
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="profile">
+            <a href="medical-profile.html" class="profile-link">
+                <i class="fas fa-user-circle profile-icon" aria-label="Profile"></i>
+                <span class="profile-tooltip">Profile</span>
+            </a>
+        </div>
+        <ul>
+            <li><a href="medical-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="medical-notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+            <li><a href="medical-upload.html"><i class="fas fa-upload"></i> Upload Record</a></li>
+            <li><a href="medical-view.html"><i class="fas fa-folder-open"></i> View/Edit Records</a></li>
+            <li><a href="medical-approvals.html" class="active"><i class="fas fa-clipboard-check"></i> Approvals</a></li>
+            <li><a href="medical-settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <h1>Access Approvals</h1>
+        
+        <div class="approvals-container">
+            <div class="approval-tabs">
+                <div class="approval-tab active" data-tab="pending">Pending Approvals</div>
+                <div class="approval-tab" data-tab="approved">Approved Requests</div>
+                <div class="approval-tab" data-tab="rejected">Rejected Requests</div>
+            </div>
+            
+            <div id="pending-approvals" class="approval-tab-content active">
+                <div class="approval-list" id="pending-approval-list">
+                    <!-- Pending approvals will be loaded here -->
+                </div>
+                
+                <div id="pending-empty-state" class="empty-state">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h3>No Pending Approvals</h3>
+                    <p>You don't have any pending approval requests at the moment.</p>
+                </div>
+            </div>
+            
+            <div id="approved-approvals" class="approval-tab-content">
+                <div class="approval-list" id="approved-approval-list">
+                    <!-- Approved approvals will be loaded here -->
+                </div>
+                
+                <div id="approved-empty-state" class="empty-state">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>No Approved Requests</h3>
+                    <p>You haven't approved any access requests yet.</p>
+                </div>
+            </div>
+            
+            <div id="rejected-approvals" class="approval-tab-content">
+                <div class="approval-list" id="rejected-approval-list">
+                    <!-- Rejected approvals will be loaded here -->
+                </div>
+                
+                <div id="rejected-empty-state" class="empty-state">
+                    <i class="fas fa-times-circle"></i>
+                    <h3>No Rejected Requests</h3>
+                    <p>You haven't rejected any access requests yet.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Request Details Modal -->
+    <div id="request-details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Request Details</h2>
+            <div id="request-details-content"></div>
+        </div>
+    </div>
+
+    <script src="/js/medical/medical-approvals.js"></script>
+</body>
+</html>

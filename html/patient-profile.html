@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Profile - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/patient.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <a href="patient-profile.html" class="profile-link">
+                <i class="fas fa-user-circle profile-icon" aria-label="Profile"></i>
+                <span class="profile-tooltip">Profile</span>
+            </a>
+        </div>
+        <ul>
+            <li><a href="patient-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="patient-records.html"><i class="fas fa-file-medical"></i> My Records</a></li>
+            <li><a href="patient-consent.html"><i class="fas fa-clipboard-check"></i> Consent Management</a></li>
+            <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications <span class="badge">3</span></a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <section class="main-content">
+        <h1>Your Profile</h1>
+        <div class="profile-container">
+            <div class="profile-header card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-circle" aria-label="User Avatar"></i>
+                    <div class="activity-ring">
+                        <svg width="120" height="120">
+                            <circle cx="60" cy="60" r="54" stroke="#1e1b4b" stroke-width="8" fill="none" />
+                            <circle cx="60" cy="60" r="54" stroke="#4f46e5" stroke-width="8" fill="none" stroke-dasharray="339" stroke-dashoffset="100" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h2>Loading...</h2>
+                    <p><strong>Role:</strong> Loading...</p>
+                    <p><strong>ID:</strong> Loading...</p>
+                </div>
+            </div>
+
+            <div class="profile-details card">
+                <h2><i class="fas fa-id-card"></i> Contact Details</h2>
+                <p><strong>Email:</strong> <span id="user-email"></span></p>
+                <p><strong>Contact:</strong> <span id="user-phone"></span></p>
+                <p><strong>Address:</strong> <span id="user-address"></span></p>
+            </div>
+
+            <div class="profile-stats card">
+                <h2><i class="fas fa-chart-line"></i> Activity Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <p><strong>Records Shared</strong></p>
+                        <p class="stat-number">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <p><strong>Active Consents</strong></p>
+                        <p class="stat-number">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <p><strong>Last Login</strong></p>
+                        <p class="stat-number">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-actions card">
+                <h2><i class="fas fa-tools"></i> Quick Actions</h2>
+                <div class="action-buttons">
+                    <button class="btn" id="edit-profile-btn" onclick="editProfileDirectly()"><i class="fas fa-edit"></i> Edit Profile</button>
+                    <a href="settings.html" class="btn"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="notifications.html" class="btn" style="min-width: 150px; padding-left: 15px; padding-right: 15px;"><i class="fas fa-bell"></i> Notifications</a>
+                    <a href="index.html" class="btn deny"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        // Initialize localStorage with some values if they don't exist
+        if (!localStorage.getItem('userCount')) {
+            localStorage.setItem('userCount', '1');
+        }
+        
+        // For existing users, format their ID properly
+        if (localStorage.getItem('userId')) {
+            // Try to extract a number from the existing ID
+            let userNumber = 1;
+            const currentId = localStorage.getItem('userId');
+            
+            if (currentId.includes('PAT-')) {
+                const numPart = currentId.split('PAT-')[1];
+                if (!isNaN(parseInt(numPart))) {
+                    userNumber = parseInt(numPart);
+                }
+            } else if (!isNaN(parseInt(currentId))) {
+                userNumber = parseInt(currentId);
+            }
+            
+            // Format ID properly as PAT-001, PAT-002, etc.
+            const formattedId = 'PAT-' + userNumber.toString().padStart(3, '0');
+            localStorage.setItem('userId', formattedId);
+            localStorage.setItem('userCount', userNumber.toString());
+        } else {
+            // For new users, create a sequential ID
+            const userCount = parseInt(localStorage.getItem('userCount') || '1');
+            const formattedId = 'PAT-' + userCount.toString().padStart(3, '0');
+            localStorage.setItem('userId', formattedId);
+        }
+        
+        // Initialize other localStorage values if they don't exist
+        if (!localStorage.getItem('userName')) {
+            localStorage.setItem('userName', 'Patient');
+        }
+        if (!localStorage.getItem('userEmail')) {
+            localStorage.setItem('userEmail', 'your.email@example.com');
+        }
+        if (!localStorage.getItem('userType')) {
+            localStorage.setItem('userType', 'patient');
+        }
+        if (!localStorage.getItem('userPhone')) {
+            localStorage.setItem('userPhone', 'Add your phone number');
+        }
+        if (!localStorage.getItem('userAddress')) {
+            localStorage.setItem('userAddress', 'Add your address');
+        }
+        if (!localStorage.getItem('lastLogin')) {
+            localStorage.setItem('lastLogin', new Date().toISOString());
+        }
+        
+        // Update profile information when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update profile information
+            document.querySelector('.profile-info h2').textContent = localStorage.getItem('userName') || 'Patient';
+            document.querySelector('.profile-info p:nth-child(2)').innerHTML = '<strong>Role:</strong> Patient';
+            document.querySelector('.profile-info p:nth-child(3)').innerHTML = '<strong>ID:</strong> ' + localStorage.getItem('userId');
+            
+            // Update contact details
+            document.getElementById('user-email').textContent = localStorage.getItem('userEmail') || 'Not provided';
+            document.getElementById('user-phone').textContent = localStorage.getItem('userPhone') || 'Not provided';
+            document.getElementById('user-address').textContent = localStorage.getItem('userAddress') || 'Not provided';
+            
+            // Update activity stats
+            document.querySelector('.stat-item:nth-child(1) .stat-number').textContent = localStorage.getItem('recordsShared') || '0';
+            document.querySelector('.stat-item:nth-child(2) .stat-number').textContent = localStorage.getItem('activeConsents') || '0';
+            
+            // Format and display last login time
+            const lastLogin = localStorage.getItem('lastLogin');
+            if (lastLogin) {
+                const date = new Date(lastLogin);
+                document.querySelector('.stat-item:nth-child(3) .stat-number').textContent = date.toLocaleDateString();
+            } else {
+                document.querySelector('.stat-item:nth-child(3) .stat-number').textContent = new Date().toLocaleDateString();
+            }
+        });
+        
+        // Direct function for edit profile button
+        function editProfileDirectly() {
+            console.log('Edit profile button clicked directly from inline handler');
+            
+            // Create a basic modal
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            modal.style.zIndex = '1000';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            
+            const content = document.createElement('div');
+            content.style.backgroundColor = '#1a1a2e';
+            content.style.padding = '30px';
+            content.style.borderRadius = '10px';
+            content.style.width = '80%';
+            content.style.maxWidth = '500px';
+            content.style.color = 'white';
+            
+            content.innerHTML = `
+                <h2>Edit Profile</h2>
+                <form id="simple-edit-form">
+                    <div style="margin-bottom: 15px;">
+                        <label>Name:</label>
+                        <input type="text" id="simple-name" value="${localStorage.getItem('userName') || ''}" style="width: 100%; padding: 8px; background: #333; color: white; border: 1px solid #555;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>Email:</label>
+                        <input type="email" id="simple-email" value="${localStorage.getItem('userEmail') || ''}" style="width: 100%; padding: 8px; background: #333; color: white; border: 1px solid #555;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>Phone:</label>
+                        <input type="text" id="simple-phone" value="${localStorage.getItem('userPhone') || ''}" style="width: 100%; padding: 8px; background: #333; color: white; border: 1px solid #555;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>Address:</label>
+                        <input type="text" id="simple-address" value="${localStorage.getItem('userAddress') || ''}" style="width: 100%; padding: 8px; background: #333; color: white; border: 1px solid #555;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <button type="button" id="simple-cancel" style="padding: 10px 20px; background: #555; color: white; border: none; cursor: pointer;">Cancel</button>
+                        <button type="submit" style="padding: 10px 20px; background: #4f46e5; color: white; border: none; cursor: pointer;">Save</button>
+                    </div>
+                </form>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            // Handle form submission
+            document.getElementById('simple-edit-form').onsubmit = function(e) {
+                e.preventDefault();
+                localStorage.setItem('userName', document.getElementById('simple-name').value);
+                localStorage.setItem('userEmail', document.getElementById('simple-email').value);
+                localStorage.setItem('userPhone', document.getElementById('simple-phone').value);
+                localStorage.setItem('userAddress', document.getElementById('simple-address').value);
+                
+                // Update display
+                document.querySelector('.profile-info h2').textContent = localStorage.getItem('userName');
+                document.getElementById('user-email').textContent = localStorage.getItem('userEmail');
+                document.getElementById('user-phone').textContent = localStorage.getItem('userPhone');
+                document.getElementById('user-address').textContent = localStorage.getItem('userAddress');
+                
+                modal.remove();
+                alert('Profile updated successfully!');
+                
+                // Reload page to refresh all data
+                window.location.reload();
+            };
+            
+            // Handle cancel
+            document.getElementById('simple-cancel').onclick = function() {
+                modal.remove();
+            };
+        }
+    </script>
+</body>
+</html>

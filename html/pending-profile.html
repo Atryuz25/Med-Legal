@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/pending-profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="profile-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-user"></i>
+                <span>MedLegal</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active">
+                    <a href="#"><i class="fas fa-user"></i> Profile</a>
+                </li>
+                <li>
+                    <a href="/api/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Profile</h1>
+            </header>
+
+            <div class="profile-section">
+                <div class="profile-card">
+                    <div class="profile-info">
+                        <div class="profile-image">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h2 id="user-name">Loading...</h2>
+                        <p id="user-id">ID: Loading...</p>
+                        <p id="user-type">Type: Loading...</p>
+                    </div>
+
+                    <div class="contact-info">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-envelope"></i> <span id="user-email">Loading...</span></p>
+                        <p><i class="fas fa-phone"></i> <span id="user-phone">Loading...</span></p>
+                    </div>
+
+                    <div class="status-section">
+                        <h3>Account Status</h3>
+                        <div class="approval-status">
+                            <i class="fas fa-clock"></i>
+                            <p>Waiting for Admin Approval</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/pending-profile.js"></script>
+</body>
+</html>

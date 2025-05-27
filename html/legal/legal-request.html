@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Access - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/legal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .file-upload {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        
+        .file-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: rgba(79, 70, 229, 0.1);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 5px;
+            color: #818cf8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-btn:hover {
+            background: rgba(79, 70, 229, 0.2);
+        }
+        
+        .file-name {
+            font-size: 14px;
+            color: #c7d2fe;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+        
+        .file-upload-help {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+        
+        .court-order-section {
+            background: rgba(79, 70, 229, 0.05);
+            border: 1px solid rgba(79, 70, 229, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .approval-flow {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .approval-flow-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #c7d2fe;
+        }
+        
+        .approval-steps {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .approval-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .approval-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -10px;
+            width: 10px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .step-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 5px;
+        }
+        
+        .step-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <a href="../profile.html"><i class="fas fa-user-circle profile-icon"></i></a>
+        </div>
+        <ul>
+            <li><a href="legal-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="legal-notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+            <li><a href="legal-view.html"><i class="fas fa-search"></i> View/Search Records</a></li>
+            <li><a href="legal-request.html" class="active"><i class="fas fa-file-signature"></i> Request Access</a></li>
+            <li><a href="legal-settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <section class="main-content">
+        <h1>Request Medical Record Access</h1>
+        <div class="request-form card">
+            <form id="access-request-form">
+                <div class="form-group">
+                    <label for="hospital">Hospital/Medical Facility *</label>
+                    <select id="hospital" name="hospital" required>
+                        <option value="" disabled selected>Select Hospital</option>
+                        <option value="General Hospital">General Hospital</option>
+                        <option value="City Medical Center">City Medical Center</option>
+                        <option value="Memorial Hospital">Memorial Hospital</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="patient-name">Patient Full Name *</label>
+                    <input type="text" id="patient-name" name="patientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="patient-phone">Patient Phone Number *</label>
+                    <input type="tel" id="patient-phone" name="patientPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="case-id">Case ID/Number *</label>
+                    <input type="text" id="case-id" name="caseId" required list="case-suggestions">
+                    <datalist id="case-suggestions">
+                        <option value="MLC-001">
+                        <option value="MLC-002">
+                        <option value="MLC-003">
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="case-type">Case Type *</label>
+                    <select id="case-type" name="caseType" required>
+                        <option value="" disabled selected>Select Case Type</option>
+                        <option value="personal-injury">Personal Injury</option>
+                        <option value="medical-malpractice">Medical Malpractice</option>
+                        <option value="insurance-claim">Insurance Claim</option>
+                        <option value="disability-claim">Disability Claim</option>
+                        <option value="workers-comp">Workers' Compensation</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date-range">Date Range of Records Needed</label>
+                    <div class="date-range-container">
+                        <div class="date-input">
+                            <label for="start-date">From:</label>
+                            <input type="date" id="start-date" name="startDate">
+                        </div>
+                        <div class="date-input">
+                            <label for="end-date">To:</label>
+                            <input type="date" id="end-date" name="endDate">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason for Request *</label>
+                    <textarea id="reason" name="reason" required></textarea>
+                </div>
+                
+                <!-- Advocate License Upload -->
+                <div class="form-group">
+                    <label>Advocate License (PDF) *</label>
+                    <div class="file-upload">
+                        <label for="advocate-license" class="file-upload-btn">
+                            <i class="fas fa-upload"></i> Upload License
+                        </label>
+                        <input type="file" id="advocate-license" name="advocateLicense" accept=".pdf" required>
+                        <div id="advocate-license-name" class="file-name">No file selected</div>
+                        <div class="file-upload-help">Please upload a valid advocate license in PDF format (max 5MB)</div>
+                    </div>
+                </div>
+                
+                <!-- Purpose of Request Upload -->
+                <div class="form-group">
+                    <label>Purpose of Request Document (PDF) *</label>
+                    <div class="file-upload">
+                        <label for="purpose-document" class="file-upload-btn">
+                            <i class="fas fa-upload"></i> Upload Document
+                        </label>
+                        <input type="file" id="purpose-document" name="purposeDocument" accept=".pdf" required>
+                        <div id="purpose-document-name" class="file-name">No file selected</div>
+                        <div class="file-upload-help">Please upload a document explaining the purpose of your request in PDF format (max 5MB)</div>
+                    </div>
+                </div>
+                
+                <!-- Court Order Section -->
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="is-court-order" name="isCourtOrder">
+                        <label for="is-court-order">This request is based on a court order</label>
+                    </div>
+                    
+                    <div id="court-order-section" class="court-order-section" style="display: none;">
+                        <div class="file-upload">
+                            <label for="court-order-document" class="file-upload-btn">
+                                <i class="fas fa-upload"></i> Upload Court Order
+                            </label>
+                            <input type="file" id="court-order-document" name="courtOrderDocument" accept=".pdf">
+                            <div id="court-order-document-name" class="file-name">No file selected</div>
+                            <div class="file-upload-help">Please upload the court order document in PDF format (max 5MB)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Approval Flow Information -->
+                <div class="approval-flow">
+                    <div class="approval-flow-title">Approval Flow:</div>
+                    <div id="approval-flow-text">If this is a court order request, only medical staff approval is required. Otherwise, both patient consent and medical staff approval are needed.</div>
+                    
+                    <div class="approval-steps" id="approval-steps">
+                        <div class="approval-step">
+                            <div class="step-icon"><i class="fas fa-paper-plane"></i></div>
+                            <div class="step-text">Request Submitted</div>
+                        </div>
+                        <div class="approval-step" id="patient-consent-step">
+                            <div class="step-icon"><i class="fas fa-user-check"></i></div>
+                            <div class="step-text">Patient Consent</div>
+                        </div>
+                        <div class="approval-step">
+                            <div class="step-icon"><i class="fas fa-user-md"></i></div>
+                            <div class="step-text">Medical Approval</div>
+                        </div>
+                        <div class="approval-step">
+                            <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="step-text">Access Granted</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="urgency">Urgency Level</label>
+                    <select id="urgency" name="urgency">
+                        <option value="normal">Normal</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="additional-info">Additional Information</label>
+                    <textarea id="additional-info" name="additionalInfo"></textarea>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="consent-confirmation" name="consentConfirmation" required>
+                    <label for="consent-confirmation">I confirm that I have the legal right to request these medical records and have obtained necessary consent</label>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn submit-btn"><i class="fas fa-paper-plane"></i> Submit Request</button>
+                    <button type="button" class="btn draft-btn"><i class="fas fa-save"></i> Save Draft</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Notification container -->
+    <div id="notification-container"></div>
+
+    <script src="/js/legal/legal-request.js"></script>
+</body>
+</html>

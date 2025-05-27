@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Notifications - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/medical.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .notifications-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .notification-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: rgba(59, 130, 246, 0.5);
+            border-color: #3b82f6;
+        }
+        
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .notification-item {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-item:hover {
+            background: rgba(30, 41, 59, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2);
+        }
+        
+        .notification-item.unread {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .notification-item {
+            position: relative;
+        }
+        
+        .notification-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease, background 0.3s ease;
+        }
+        
+        .notification-item:hover .notification-remove {
+            opacity: 1;
+        }
+        
+        .notification-remove:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .notification-icon i {
+            color: #3b82f6;
+            font-size: 18px;
+        }
+        
+        .notification-content {
+            flex-grow: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        
+        .notification-message {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+        
+        .notification-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .notification-btn {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .approve-btn {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .approve-btn:hover {
+            background: rgba(16, 185, 129, 0.4);
+        }
+        
+        .reject-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .reject-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+        
+        .view-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .view-btn:hover {
+            background: rgba(59, 130, 246, 0.4);
+        }
+        
+        .mark-read-btn {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-left: auto;
+        }
+        
+        .mark-read-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+            text-align: center;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+        }
+        
+        /* Notification type-specific styles */
+        .notification-icon.access-request {
+            background: rgba(245, 158, 11, 0.2);
+        }
+        
+        .notification-icon.access-request i {
+            color: #fbbf24;
+        }
+        
+        .notification-icon.system {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        
+        .notification-icon.system i {
+            color: #60a5fa;
+        }
+        
+        .notification-icon.alert {
+            background: rgba(239, 68, 68, 0.2);
+        }
+        
+        .notification-icon.alert i {
+            color: #f87171;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <a href="medical-profile.html"><i class="fas fa-user-circle profile-icon"></i></a>
+        </div>
+        <ul>
+            <li><a href="medical-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="medical-notifications.html" class="active"><i class="fas fa-bell"></i> Notifications <span class="badge" id="notifications-badge">0</span></a></li>
+            <li><a href="medical-upload.html"><i class="fas fa-upload"></i> Upload Record</a></li>
+            <li><a href="medical-view.html"><i class="fas fa-file-medical"></i> View/Edit Records</a></li>
+            <li><a href="medical-approvals.html"><i class="fas fa-clipboard-check"></i> Approvals</a></li>
+            <li><a href="medical-settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <section class="main-content">
+        <h1>Notifications</h1>
+        
+        <div class="notifications-container">
+            <div class="notification-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="unread">Unread</button>
+                <button class="filter-btn" data-filter="access-request">Access Requests</button>
+                <button class="filter-btn" data-filter="system">System</button>
+            </div>
+            
+            <div class="notification-list" id="notification-list">
+                <!-- Notifications will be loaded here -->
+                <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>No notifications to display</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/medical/medical-notifications.js"></script>
+</body>
+</html>

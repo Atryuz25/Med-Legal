@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Locked - MedLegal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .locked-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .locked-icon {
+            font-size: 80px;
+            color: #ef4444;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .countdown {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 30px 0;
+        }
+        
+        .countdown span {
+            color: #3b82f6;
+        }
+        
+        .options {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            color: #ffffff;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #2563eb, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .security-tips {
+            margin-top: 40px;
+            text-align: left;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .security-tips h3 {
+            color: #3b82f6;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .security-tips ul {
+            color: rgba(255, 255, 255, 0.8);
+            padding-left: 20px;
+        }
+        
+        .security-tips li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="locked-container">
+        <i class="fas fa-lock locked-icon"></i>
+        <h1>Account Temporarily Locked</h1>
+        <p class="message">
+            Your account has been temporarily locked due to multiple failed login attempts. 
+            This is a security measure to protect your account from unauthorized access.
+        </p>
+        
+        <div class="countdown">
+            Time remaining: <span id="countdown-timer">30:00</span>
+        </div>
+        
+        <div class="options">
+            <a href="forgot-password.html" class="btn btn-primary">
+                <i class="fas fa-key"></i> Reset Password
+            </a>
+            <a href="index.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Login
+            </a>
+        </div>
+        
+        <div class="security-tips">
+            <h3><i class="fas fa-shield-alt"></i> Security Tips</h3>
+            <ul>
+                <li>Use a strong, unique password for your account</li>
+                <li>Never share your password with anyone</li>
+                <li>Enable two-factor authentication if available</li>
+                <li>Make sure you're on the correct website before entering credentials</li>
+                <li>Contact support if you believe your account has been compromised</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get lock information from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const lockTime = urlParams.get('lockTime');
+            const userType = urlParams.get('userType');
+            const userId = urlParams.get('id');
+            
+            // If no lock time provided, default to 30 minutes
+            let remainingSeconds = 30 * 60;
+            
+            if (lockTime) {
+                const lockDate = new Date(decodeURIComponent(lockTime));
+                const now = new Date();
+                const lockDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
+                const elapsedTime = now - lockDate;
+                
+                if (elapsedTime < lockDuration) {
+                    remainingSeconds = Math.ceil((lockDuration - elapsedTime) / 1000);
+                } else {
+                    // Lock duration expired, redirect to login
+                    if (userType && userId) {
+                        // Reset lock status in localStorage
+                        const users = JSON.parse(localStorage.getItem('users') || '[]');
+                        const userIndex = users.findIndex(u => 
+                            (u.id === userId || u.email === userId) && 
+                            u.userType === userType
+                        );
+                        
+                        if (userIndex !== -1) {
+                            users[userIndex].failedAttempts = 0;
+                            users[userIndex].accountLocked = false;
+                            delete users[userIndex].lockTime;
+                            localStorage.setItem('users', JSON.stringify(users));
+                        }
+                    }
+                    
+                    window.location.href = 'index.html';
+                    return;
+                }
+            }
+            
+            // Update countdown timer
+            const countdownTimer = document.getElementById('countdown-timer');
+            updateCountdown();
+            
+            const countdownInterval = setInterval(function() {
+                remainingSeconds--;
+                
+                if (remainingSeconds <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    // Reset lock status in localStorage if user info is available
+                    if (userType && userId) {
+                        const users = JSON.parse(localStorage.getItem('users') || '[]');
+                        const userIndex = users.findIndex(u => 
+                            (u.id === userId || u.email === userId) && 
+                            u.userType === userType
+                        );
+                        
+                        if (userIndex !== -1) {
+                            users[userIndex].failedAttempts = 0;
+                            users[userIndex].accountLocked = false;
+                            delete users[userIndex].lockTime;
+                            localStorage.setItem('users', JSON.stringify(users));
+                        }
+                    }
+                    
+                    // Redirect to login page
+                    window.location.href = 'index.html';
+                } else {
+                    updateCountdown();
+                }
+            }, 1000);
+            
+            function updateCountdown() {
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        });
+    </script>
+</body>
+</html>

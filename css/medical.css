@@ -1,0 +1,140 @@
+/* Medical staff-specific styles */
+:root {
+    --primary-color: #10b981;  /* Emerald */
+    --secondary-color: #059669;
+    --accent-color: #6ee7b7;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-hover: rgba(255, 255, 255, 0.1);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+.sidebar {
+    background: rgba(16, 185, 129, 0.05);
+    border-right: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Medical Dashboard */
+.medical-dashboard {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.patient-queue, .quick-actions-container {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+}
+
+.patient-queue:hover, .quick-actions-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background: var(--card-hover);
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.quick-action-btn {
+    padding: 15px;
+    background: var(--card-bg);
+    color: #ffffff;
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    min-height: 120px;
+}
+
+.quick-action-btn i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.quick-action-btn span {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+    border-color: var(--primary-color);
+    background: var(--card-hover);
+}
+
+.quick-action-btn:hover i {
+    transform: scale(1.1);
+}
+
+/* Patient Queue Styles */
+.patient-queue h2, .quick-actions-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.patient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.patient-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.patient-item:hover {
+    background: var(--card-hover);
+    transform: translateX(5px);
+}
+
+.patient-info h4 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.patient-info p {
+    margin: 5px 0 0 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.patient-actions .btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .medical-dashboard {
+        grid-template-columns: 1fr;
+    }
+}
