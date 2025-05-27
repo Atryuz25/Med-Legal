@@ -70,85 +70,62 @@
                         localStorage.setItem('token', data.token);
                         localStorage.setItem('userName', data.user.name);
                         localStorage.setItem('userEmail', data.user.email);
-                        
-                        // Store user type in localStorage
                         localStorage.setItem('userType', data.user.userType);
-                        
-                        // Store superadmin status
                         localStorage.setItem('isSuperAdmin', data.user.isSuperAdmin);
                         
                         const redirectMap = {
                             'medical': 'medical/medical-dashboard.html',
-                            'admin': 'admin-dashboard.html',
+                            'admin': data.user.isSuperAdmin ? 'admin/superadmin-dashboard.html' : 'admin/admin-dashboard.html',
                             'legal': 'legal/legal-dashboard.html',
-                            'patient': 'patient-dashboard.html'
+                            'patient': 'patient/patient-dashboard.html'
                         };
                         
-                        const userType = data.user.userType;
-                        const redirectUrl = redirectMap[userType] || 'pending-profile.html';
-                        // Log the redirect URL for debugging
+                        const redirectUrl = redirectMap[data.user.userType] || 'pending-profile.html';
                         console.log('Redirecting to:', redirectUrl);
-                        
-                        // Use absolute path to avoid path issues
                         window.location.href = redirectUrl;
+                        return;
                     } else {
-                        errorMessage.textContent = data.message || 'Login failed';
-                        errorMessage.style.display = 'block';
-                        errorMessage.style.color = 'red';
+                        throw new Error(data.message || 'Login failed');
                     }
                 } catch (error) {
-                    console.log('Backend API not available, using localStorage for authentication');
-                    console.log('Looking for user with ID/email:', id, 'and type:', userType);
+                    console.log('Backend API error:', error.message);
+                    // Don't throw here, just continue to localStorage fallback
+                }
+
+                // Fallback to localStorage authentication
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                console.log('Available users:', users);
+                
+                // Find user by ID or email
+                const userIndex = users.findIndex(u => 
+                    (u.id === id || u.email === id) && 
+                    u.userType === userType
+                );
+                
+                console.log('Found user at index:', userIndex);
+                
+                if (userIndex !== -1) {
+                    const user = users[userIndex];
+                    console.log('User found:', user);
                     
-                    // Fallback to localStorage authentication
-                    const users = JSON.parse(localStorage.getItem('users') || '[]');
-                    console.log('Available users:', users);
-                    
-                    // Find user by ID or email
-                    const userIndex = users.findIndex(u => 
-                        (u.id === id || u.email === id) && 
-                        u.userType === userType
-                    );
-                    
-                    console.log('Found user at index:', userIndex);
-                    
-                    if (userIndex !== -1) {
-                        const user = users[userIndex];
-                        console.log('User found:', user);
+                    // Check if account is locked
+                    if (user.accountLocked) {
+                        console.log('Account is locked, checking lock time');
+                        const lockTime = new Date(user.lockTime);
+                        const now = new Date();
+                        const lockDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
                         
-                        // Check if account is locked
-                        if (user.accountLocked) {
-                            console.log('Account is locked, checking lock time');
-                            const lockTime = new Date(user.lockTime);
-                            const now = new Date();
-                            const lockDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
-                            
-                            if (now - lockTime < lockDuration) {
-                                // Account is still locked
-                                const minutesLeft = Math.ceil((lockDuration - (now - lockTime)) / (60 * 1000));
-                                console.log('Account still locked for', minutesLeft, 'minutes');
-                                errorMessage.textContent = `Account locked due to multiple failed attempts. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? 's' : ''}.`;
-                                errorMessage.style.display = 'block';
-                                errorMessage.style.color = 'red';
-                                return;
-                            } else {
-                                // Lock duration expired, reset failed attempts
-                                console.log('Lock duration expired, resetting failed attempts');
-                                user.failedAttempts = 0;
-                                user.accountLocked = false;
-                                delete user.lockTime;
-                                
-                                // Update user in localStorage
-                                users[userIndex] = user;
-                                localStorage.setItem('users', JSON.stringify(users));
-                            }
-                        }
-                        
-                        // Check password
-                        console.log('Checking password');
-                        if (user.password === password) {
-                            console.log('Password correct, login successful');
-                            // Reset failed attempts on successful login
+                        if (now - lockTime < lockDuration) {
+                            // Account is still locked
+                            const minutesLeft = Math.ceil((lockDuration - (now - lockTime)) / (60 * 1000));
+                            console.log('Account still locked for', minutesLeft, 'minutes');
+                            errorMessage.textContent = `Account locked due to multiple failed attempts. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? 's' : ''}.`;
+                            errorMessage.style.display = 'block';
+                            errorMessage.style.color = 'red';
+                            return;
+                        } else {
+                            // Lock duration expired, reset failed attempts
+                            console.log('Lock duration expired, resetting failed attempts');
                             user.failedAttempts = 0;
                             user.accountLocked = false;
                             delete user.lockTime;
@@ -156,59 +133,73 @@
                             // Update user in localStorage
                             users[userIndex] = user;
                             localStorage.setItem('users', JSON.stringify(users));
-                            
-                            // Store user data in localStorage
-                            localStorage.setItem('token', 'demo-token');
-                            localStorage.setItem('userName', user.name);
-                            localStorage.setItem('userEmail', user.email);
-                            localStorage.setItem('userType', user.userType);
-                            localStorage.setItem('isSuperAdmin', user.isSuperAdmin || false);
-                            
-                            const redirectMap = {
-                                'medical': 'medical/medical-dashboard.html',
-                                'admin': user.isSuperAdmin ? 'admin/superadmin-dashboard.html' : 'admin/admin-dashboard.html',
-                                'legal': 'legal/legal-dashboard.html',
-                                'patient': 'patient/patient-dashboard.html'
-                            };
-                            
-                            const redirectUrl = redirectMap[user.userType] || 'pending-profile.html';
-                            console.log('Redirecting to:', redirectUrl);
-                            
-                            window.location.href = redirectUrl;
-                        } else {
-                            console.log('Password incorrect');
-                            // Increment failed attempts
-                            user.failedAttempts = (user.failedAttempts || 0) + 1;
-                            console.log(`Failed attempts: ${user.failedAttempts}`);
-                            
-                            // Lock account after 3 failed attempts
-                            if (user.failedAttempts >= 3) {
-                                console.log('Locking account due to too many failed attempts');
-                                user.accountLocked = true;
-                                user.lockTime = new Date().toISOString();
-                                errorMessage.textContent = 'Account locked due to multiple failed attempts. Try again in 30 minutes or reset your password.';
-                            } else if (user.failedAttempts === 1) {
-                                // First attempt - just show invalid credentials without warning
-                                errorMessage.textContent = 'Invalid credentials. Please try again.';
-                            } else {
-                                // Second attempt onwards - show countdown warning with big text
-                                const attemptsLeft = 3 - user.failedAttempts;
-                                errorMessage.innerHTML = `<span style="color: #ff0000; font-weight: bold; font-size: 1.2em;">WARNING!</span> Invalid credentials. ${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} left before account lockout!`;
-                            }
-                            
-                            // Update user in localStorage
-                            users[userIndex] = user;
-                            localStorage.setItem('users', JSON.stringify(users));
-                            
-                            errorMessage.style.display = 'block';
-                            errorMessage.style.color = 'red';
                         }
+                    }
+                    
+                    // Check password
+                    console.log('Checking password');
+                    if (user.password === password) {
+                        console.log('Password correct, login successful');
+                        // Reset failed attempts on successful login
+                        user.failedAttempts = 0;
+                        user.accountLocked = false;
+                        delete user.lockTime;
+                        
+                        // Update user in localStorage
+                        users[userIndex] = user;
+                        localStorage.setItem('users', JSON.stringify(users));
+                        
+                        // Store user data in localStorage
+                        localStorage.setItem('token', 'demo-token');
+                        localStorage.setItem('userName', user.name);
+                        localStorage.setItem('userEmail', user.email);
+                        localStorage.setItem('userType', user.userType);
+                        localStorage.setItem('isSuperAdmin', user.isSuperAdmin || false);
+                        
+                        const redirectMap = {
+                            'medical': 'medical/medical-dashboard.html',
+                            'admin': user.isSuperAdmin ? 'admin/superadmin-dashboard.html' : 'admin/admin-dashboard.html',
+                            'legal': 'legal/legal-dashboard.html',
+                            'patient': 'patient/patient-dashboard.html'
+                        };
+                        
+                        const redirectUrl = redirectMap[user.userType] || 'pending-profile.html';
+                        console.log('Redirecting to:', redirectUrl);
+                        
+                        window.location.href = redirectUrl;
                     } else {
-                        console.log('User not found');
-                        errorMessage.textContent = 'Invalid credentials. Please try again.';
+                        console.log('Password incorrect');
+                        // Increment failed attempts
+                        user.failedAttempts = (user.failedAttempts || 0) + 1;
+                        console.log(`Failed attempts: ${user.failedAttempts}`);
+                        
+                        // Lock account after 3 failed attempts
+                        if (user.failedAttempts >= 3) {
+                            console.log('Locking account due to too many failed attempts');
+                            user.accountLocked = true;
+                            user.lockTime = new Date().toISOString();
+                            errorMessage.textContent = 'Account locked due to multiple failed attempts. Try again in 30 minutes or reset your password.';
+                        } else if (user.failedAttempts === 1) {
+                            // First attempt - just show invalid credentials without warning
+                            errorMessage.textContent = 'Invalid credentials. Please try again.';
+                        } else {
+                            // Second attempt onwards - show countdown warning with big text
+                            const attemptsLeft = 3 - user.failedAttempts;
+                            errorMessage.innerHTML = `<span style="color: #ff0000; font-weight: bold; font-size: 1.2em;">WARNING!</span> Invalid credentials. ${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} left before account lockout!`;
+                        }
+                        
+                        // Update user in localStorage
+                        users[userIndex] = user;
+                        localStorage.setItem('users', JSON.stringify(users));
+                        
                         errorMessage.style.display = 'block';
                         errorMessage.style.color = 'red';
                     }
+                } else {
+                    console.log('User not found');
+                    errorMessage.textContent = 'Invalid credentials. Please try again.';
+                    errorMessage.style.display = 'block';
+                    errorMessage.style.color = 'red';
                 }
             } catch (error) {
                 console.error('Login error:', error);
